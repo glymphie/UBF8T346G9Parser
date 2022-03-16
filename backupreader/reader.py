@@ -1,4 +1,5 @@
 import pathlib
+import sqlite3
 
 class backupreader:
     """Read data from Outlook 2016 Backup folder.
@@ -42,22 +43,35 @@ class backupreader:
         return location
 
     def iterate_over_messages(self):
-        messages_folder = 'Messages/'
-        messages_path = pathlib.Path(
-            self.profile_data_location + messages_folder)
-        for num_folder in messages_path.iterdir():
-            if self.filter_hidden in str(num_folder):
-                continue
+        sqlitedb = 'Outlook.sqlite'
+        try:
+            db_location = self._test_location(
+                self.profile_data_location + sqlitedb, 'file')
+        except FileNotFoundError:
+            raise FileNotFoundError('Missing {sqlitedb}, is the database missing?')
 
-            iter_folder = pathlib.Path(num_folder)
-            for message in iter_folder.iterdir():
-                if self.filter_hidden in str(message):
-                    continue
+        db_connection = self._connect_to_database(db_location)
+#        db_connection.execute('SELECT name FROM sqlite_master WHERE type=\'table\';')
+        for table in db_connection.fetchall():
+            print(list(table))
+        mails = self._get_mails(db_connection)
+        first_row = mails.fetchone()
+#        for key, col in zip(first_row.keys(), list(first_row)):
+#            print(key, col)
 
-                yield message
+        print(first_row['Message_MessageListData'].decode('utf-8','ignore'))
+        print(first_row['Message_MessageListData'].decode('utf-16-be','ignore'))
 
 
-    def get_file_content(self):
-        pass
+    def _connect_to_database(self, db_location):
+        db_connection = sqlite3.connect(db_location)
+        db_connection.row_factory = sqlite3.Row
+        return db_connection.cursor()
+
+    def _get_mails(self, db_connection):
+        return db_connection.execute('SELECT * FROM Mail')
+
+
+
 
 
