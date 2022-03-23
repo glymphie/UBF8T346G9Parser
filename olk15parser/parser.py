@@ -1,6 +1,7 @@
 import logging
 import dataclasses
 
+
 @dataclasses.dataclass
 class olk15parser:
     """Read olk15 formated files
@@ -40,14 +41,15 @@ class olk15parser:
             logging.debug('[LastIndex] Missing ending html tag, trying newline.')
 
         try:
-            return len(message) - message[::-1].index('\r\n'.encode('utf-16-le')[::-1])
+            return len(message) - message[::-1].index('\r\n'.encode('utf-16-le')[::-1]) - 2
         except:
             logging.debug('[LastIndex] Missing ending newline, trying newline.')
 
         try:
-            return len(message) - message[::-1].index(b'\x03\x00\x00\x00\x00\x00\x00\x00'[::-1])
+            return len(message) - message[::-1].index(b'\x03\x00\x00\x00\x00\x00\x00\x00'[::-1]) - 8
         except:
             logging.debug('[LastIndex] Missing ending newline, trying newline.')
 
         logging.debug('[LastIndex] default -1')
         return -1
+
