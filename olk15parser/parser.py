@@ -2,6 +2,9 @@ import re
 
 
 class olk15parser:
+    """Read olk15 formated files
+    """
+
     re_full_message = re.compile(r'<head>[(\r\n)\w\W]*</html>')
 
     def get_mail_content(self, olk15message_location: str) -> str:

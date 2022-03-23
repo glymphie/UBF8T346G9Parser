@@ -1,7 +1,10 @@
 import pathlib
-from typing import List
+
 
 class Helper:
+    """Helper class with sorta random functions
+    """
+
     @staticmethod
     def test_location(location: str, location_type: str) -> str:
         location_path = pathlib.Path(location)
@@ -30,6 +33,7 @@ class Helper:
             return static_path.format(userinput)
         return static_path.format(default)
 
-    @staticmethod
-    def get_location() -> str:
-        return __class__._get_backup_location() + __class__._get_profile_data()
+    @classmethod
+    def get_location(cls) -> str:
+        return cls._get_backup_location() + cls._get_profile_data()
+
