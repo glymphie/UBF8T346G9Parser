@@ -2,7 +2,7 @@ import pathlib
 
 
 class Helper:
-    """Helper class with sorta random functions
+    """Helper class with sorta random helper methods
     """
 
     @staticmethod

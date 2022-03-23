@@ -9,11 +9,9 @@ if __name__ == "__main__":
     backupreader_app = reader.backupreader(profile_data_location)
     olk15parser_app = parser.olk15parser()
 
-    for mail in backupreader_app.get_mails_from_database(): # type: ignore
-        try:
-            print(mail.get('recipients'))
-            #print(mail.get('sender').get('email'))
-        except:
-            continue
 
+    for i, mail in enumerate(backupreader_app.get_mails_from_database()):
+        mail_path = profile_data_location + mail.get('content_path')
+        print(i, mail)
+        message = olk15parser_app.get_mail_content(mail_path, mail.get('subject'))
 

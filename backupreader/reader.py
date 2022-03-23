@@ -40,7 +40,8 @@ class backupreader:
             'recipients' : self._merge_recipients(
                 mail.get('Message_ToRecipientAddressList'),
                 mail.get('Message_RecipientList')),
-            'cc' : mail.get('Message_CCRecipientAddressList')
+            'cc' : mail.get('Message_CCRecipientAddressList'),
+            'type' : mail.get('Message_type'),
         }
 
     def _merge_recipients(self, emails: str, names: str) -> List:
