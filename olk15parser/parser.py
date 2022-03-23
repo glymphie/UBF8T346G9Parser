@@ -1,8 +1,6 @@
 import logging
-import dataclasses
 
 
-@dataclasses.dataclass
 class olk15parser:
     """Read olk15 formated files
     """
