@@ -6,6 +6,7 @@ if your account was closed.
 This Parser should be able to take this folder and present the files in a neat
 HTML format, so it easily can be browsed with links to files included in emails.
 
+
 <h1> How to use </h1>
 <h4>Quick start: </h4>
 <code> python3 parser_app.py </code>
