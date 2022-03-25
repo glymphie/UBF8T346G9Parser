@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-from backupreader import reader
-from olk15parser import parser
-from archiver import archiver
-from helpers.helpers import Helper
+from src.backupreader import reader
+from src.olk15parser import parser
+from src.archiver import archiver
+from src.helpers import helpers
 
 if __name__ == "__main__":
-    profile_data_location = Helper.get_location()
+    profile_data_location = helpers.Helper.get_location()
     backupreader_app = reader.BackupReader(profile_data_location)
     olk15parser_app = parser.OLK15Parser()
     htmlformater_app = archiver.MailArchiver()

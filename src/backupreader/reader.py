@@ -2,7 +2,7 @@ import sqlite3
 import dataclasses
 from typing import Generator, List
 
-from helpers.helpers import Helper # type: ignore
+from src.helpers import helpers # type: ignore
 
 
 @dataclasses.dataclass
@@ -20,7 +20,7 @@ class BackupReader:
     def get_mails_from_database(self) -> Generator:
         sqlitedb = 'Outlook.sqlite'
         try:
-            db_location = Helper.test_location(
+            db_location = helpers.Helper.test_location(
                 self.profile_data_location + sqlitedb, 'file')
         except FileNotFoundError:
             raise FileNotFoundError('Missing {sqlitedb}, is the database missing?')
