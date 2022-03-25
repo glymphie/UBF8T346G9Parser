@@ -6,7 +6,7 @@ from helpers.helpers import Helper # type: ignore
 
 
 @dataclasses.dataclass
-class backupreader:
+class BackupReader:
     """Read data from Outlook 2016 Backup folder.
 
     Attributes:
@@ -42,6 +42,7 @@ class backupreader:
                 mail.get('Message_RecipientList')),
             'cc' : mail.get('Message_CCRecipientAddressList'),
             'type' : mail.get('Message_type'),
+            'id': mail.get('Threads_ThreadID'),
         }
 
     def _merge_recipients(self, emails: str, names: str) -> List:
@@ -52,7 +53,6 @@ class backupreader:
             return [None]
 
         recipients = []
-
         for email, name in zip(emails_split, names_split):
             recipients.append({
                 'email': email,

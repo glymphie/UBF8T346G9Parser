@@ -1,7 +1,7 @@
 import logging
 
 
-class olk15parser:
+class OLK15Parser:
     """Read olk15 formated files
     """
 
