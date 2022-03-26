@@ -1,6 +1,9 @@
 # Personal Office Backup files
 UBF8T346G9*
 
+# Restored Mails Archive
+MailArchive/Mails/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

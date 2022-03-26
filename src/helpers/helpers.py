@@ -1,7 +1,8 @@
 import pathlib
+from src.logger import config_logger #type: ignore
 
 
-class Helper:
+class Helper(config_logger.Logger):
     """Helper class with sorta random helper methods
     """
 
@@ -36,4 +37,11 @@ class Helper:
     @classmethod
     def get_location(cls) -> str:
         return cls._get_backup_location() + cls._get_profile_data()
+
+    @staticmethod
+    def open_file(filename):
+        path = pathlib.Path(filename)
+        if path.is_file:
+            return path.open('a')
+        return path.open('w')
 

@@ -2,11 +2,12 @@ import sqlite3
 import dataclasses
 from typing import Generator, List
 
-from helpers.helpers import Helper # type: ignore
+from src.helpers import helpers # type: ignore
+from src.logger import config_logger #type: ignore
 
 
 @dataclasses.dataclass
-class backupreader:
+class BackupReader(config_logger.Logger):
     """Read data from Outlook 2016 Backup folder.
 
     Attributes:
@@ -20,7 +21,7 @@ class backupreader:
     def get_mails_from_database(self) -> Generator:
         sqlitedb = 'Outlook.sqlite'
         try:
-            db_location = Helper.test_location(
+            db_location = helpers.Helper.test_location(
                 self.profile_data_location + sqlitedb, 'file')
         except FileNotFoundError:
             raise FileNotFoundError('Missing {sqlitedb}, is the database missing?')
@@ -42,6 +43,7 @@ class backupreader:
                 mail.get('Message_RecipientList')),
             'cc' : mail.get('Message_CCRecipientAddressList'),
             'type' : mail.get('Message_type'),
+            'id': mail.get('Threads_ThreadID'),
         }
 
     def _merge_recipients(self, emails: str, names: str) -> List:
@@ -52,7 +54,6 @@ class backupreader:
             return [None]
 
         recipients = []
-
         for email, name in zip(emails_split, names_split):
             recipients.append({
                 'email': email,
