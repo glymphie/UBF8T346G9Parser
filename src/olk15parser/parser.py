@@ -1,7 +1,7 @@
-import logging
+from src.logger import config_logger #type: ignore
 
 
-class OLK15Parser:
+class OLK15Parser(config_logger.Logger):
     """Read olk15 formated files
     """
 
@@ -22,32 +22,32 @@ class OLK15Parser:
         try:
             return message.index('<html'.encode('utf-16-le'))
         except:
-            logging.debug('[FirstIndex] Missing html tag, trying subject.')
+            self.logger.debug('[FirstIndex] Missing html tag, trying subject.')
 
         try:
             return message.index(subject.encode('utf-16-le'))
         except:
-            logging.debug('[FirstIndex] Missing subject, going with default 0')
+            self.logger.debug('[FirstIndex] Missing subject, going with default 0')
 
-        logging.debug('[FirstIndex] default 0')
+        self.logger.debug('[FirstIndex] default 0')
         return 0
 
     def _get_last_index(self, message: bytes) -> int:
         try:
             return len(message) - message[::-1].index('</html>'.encode('utf-16-le')[::-1])
         except:
-            logging.debug('[LastIndex] Missing ending html tag, trying newline.')
+            self.logger.debug('[LastIndex] Missing ending html tag, trying newline.')
 
         try:
             return len(message) - message[::-1].index('\r\n'.encode('utf-16-le')[::-1]) - 2
         except:
-            logging.debug('[LastIndex] Missing ending newline, trying newline.')
+            self.logger.debug('[LastIndex] Missing ending newline, trying newline.')
 
         try:
             return len(message) - message[::-1].index(b'\x03\x00\x00\x00\x00\x00\x00\x00'[::-1]) - 8
         except:
-            logging.debug('[LastIndex] Missing ending newline, trying newline.')
+            self.logger.debug('[LastIndex] Missing ending newline, trying newline.')
 
-        logging.debug('[LastIndex] default -1')
+        self.logger.debug('[LastIndex] default -1')
         return -1
 

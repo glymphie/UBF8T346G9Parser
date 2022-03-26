@@ -3,10 +3,11 @@ import dataclasses
 from typing import Generator, List
 
 from src.helpers import helpers # type: ignore
+from src.logger import config_logger #type: ignore
 
 
 @dataclasses.dataclass
-class BackupReader:
+class BackupReader(config_logger.Logger):
     """Read data from Outlook 2016 Backup folder.
 
     Attributes:

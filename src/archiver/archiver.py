@@ -1,16 +1,18 @@
-import dataclasses
+import pathlib
+import shutil
 from datetime import datetime
 from typing import Dict
-import pathlib
 
 from src.helpers import helpers #type: ignore
+from src.logger import config_logger #type: ignore
 
-@dataclasses.dataclass
-class MailArchiver:
+class MailArchiver(config_logger.Logger):
     """Archive email
     """
 
-    mailsdir: str = 'MailArchive/Mails'
+    def __init__(self) -> None:
+        self.mailsdir = 'MailArchive/Mails'
+        self._check_mailsdir(self.mailsdir)
 
     def archive_mail(self, mail: Dict, message: bytes) -> None:
         mail_times = self._get_date(mail)
@@ -46,4 +48,17 @@ class MailArchiver:
 
         pathlib.Path(mail_dir).mkdir(parents=True, exist_ok=True)
         return mail_dir
+
+    def _check_mailsdir(self, mailsdir: str):
+        mails_dir = pathlib.Path(mailsdir)
+        if mails_dir.is_dir():
+            userinput = input('The Mails directory already exists, do you want '
+                              'to start over? [Y/n]: ')
+
+            if 'n' == userinput.lower() or 'no' == userinput.lower():
+                self.logger.info('Exiting.')
+                exit(0)
+            else:
+                self.logger.info(f'Removing {mails_dir}..')
+                shutil.rmtree(mails_dir)
 

@@ -1,7 +1,8 @@
 import pathlib
+from src.logger import config_logger #type: ignore
 
 
-class Helper:
+class Helper(config_logger.Logger):
     """Helper class with sorta random helper methods
     """
 
@@ -43,3 +44,4 @@ class Helper:
         if path.is_file:
             return path.open('a')
         return path.open('w')
+
