@@ -59,6 +59,6 @@ class MailArchiver(config_logger.Logger):
                 self.logger.info('Exiting.')
                 exit(0)
             else:
-                self.logger.info(f'Removing {mails_dir}..')
+                self.logger.info(f'Removing {mails_dir}')
                 shutil.rmtree(mails_dir)
 

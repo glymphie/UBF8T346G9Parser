@@ -18,18 +18,27 @@ class BackupReader(config_logger.Logger):
     profile_data_location: str
     filter_hidden = '/.'
 
-    def get_mails_from_database(self) -> Generator:
+    @property
+    def db_location(self):
         sqlitedb = 'Outlook.sqlite'
         try:
-            db_location = helpers.Helper.test_location(
+            return helpers.Helper.test_location(
                 self.profile_data_location + sqlitedb, 'file')
         except FileNotFoundError:
-            raise FileNotFoundError('Missing {sqlitedb}, is the database missing?')
+            self.logger.warning(f'Missing {sqlitedb}, is the database missing?')
+            raise FileNotFoundError
 
-        db_connection = self._connect_to_database(db_location)
+    def get_mails_from_database(self) -> Generator:
+        self.logger.info('Getting emails from database')
+        db_connection = self._connect_to_database(self.db_location)
         mails = self._get_mails(db_connection)
         for mail in mails:
             yield self._get_info_from_email(dict(mail))
+
+    def get_mails_amount(self) -> int:
+        db_connection = self._connect_to_database(self.db_location)
+        mails = self._get_mails(db_connection)
+        return len(list(mails))
 
     def _get_info_from_email(self, mail: dict) -> dict:
         return {
