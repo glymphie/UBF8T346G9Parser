@@ -17,11 +17,82 @@ class MailArchiver(config_logger.Logger):
     def archive_mail(self, mail: Dict, message: bytes) -> None:
         mail_times = self._get_date(mail)
         mail_path = self._get_mail_path(mail, mail_times)
+        self._style_mails(mail, mail_path, message)
+
+    def _style_mails(self, mail: Dict, mail_path: str, message: bytes):
 
         with helpers.Helper.open_file(mail_path) as f:
-            f.write('\n<frame>\n')
+            f.write('<head><link rel="stylesheet" href="../../../../static/css/custom.css"></head>')
+            self._write_meta_data(mail, f)
+            f.write('\n<div class="bordermail">\n')
             f.write(message.decode('utf-16-le','ignore'))
-            f.write('\n</frame>\n')
+            f.write('\n</div>\n')
+
+    def _write_meta_data(self, mail: Dict, mail_file):
+        meta_data = '''
+<div class="bordermeta">
+  <p>
+    Subject: <b>{subject}</b>
+  </p>
+  <p>
+    From: {sender}
+  </p>
+  <p>
+    To: {recipients}
+  </p>
+  <p>
+    CC: {cc}
+  </p>
+  <p>
+    Date: {date}
+  </p>
+</div>
+'''
+
+        sendertext = self._get_sender(mail)
+        recipientstext = self._get_recipients(mail)
+        timetext = self._get_time(mail)
+
+        meta_data = meta_data.format(
+            subject=mail.get('subject'),
+            sender=sendertext,
+            recipients=' | '.join(recipientstext),
+            cc=mail.get('cc'),
+            date=timetext
+        )
+
+        mail_file.write(meta_data)
+
+    def _get_time(self, mail):
+        time = self._get_date(mail)
+        timetext = '{hours}:{minutes}:{seconds} {day}/{month}/{year}'.format(
+            year=time.get('year'),
+            month=time.get('month'),
+            day=time.get('day'),
+            hours=time.get('hours'),
+            minutes=time.get('minutes'),
+            seconds=time.get('seconds'),
+        )
+        return timetext
+
+    def _get_sender(self, mail):
+        sender = mail.get('sender')
+        sendertext = '<b>{name}</b> - <b>{email}</b>'.format(
+            email=sender.get('email'), #type: ignore
+            name=sender.get('name') #type: ignore
+        )
+        return sendertext
+
+    def _get_recipients(self, mail):
+        recipients = mail.get('recipients')
+        recipientstext = []
+        if recipients != [None]:
+            for recipient in recipients: #type: ignore
+                recipientstext.append('<b>{name}</b> - <b>{email}</b>'.format(
+                    email=recipient.get('email'), #type: ignore
+                    name=recipient.get('name') #type: ignore
+                ))
+        return recipientstext
 
     def _get_date(self, mail: Dict) -> Dict:
         mail_date = datetime.fromtimestamp(mail.get('time'))

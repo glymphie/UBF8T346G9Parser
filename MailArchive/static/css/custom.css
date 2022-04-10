@@ -1,0 +1,38 @@
+body {
+  background-color: white;
+}
+
+div.bordermail {
+  border: 5px solid black;
+  margin: 10px 10px 100px;
+  padding: 10px;
+  border-radius: 25px;
+}
+
+div.bordermeta {
+  border: 3px solid blue;
+  margin: 10px 10px -7px;
+  padding: 10px;
+  border-radius: 25px;
+  width: auto;
+}
+
+hr {
+  border: 3px solid black;
+  border-radius: 5px;
+}
+
+div.column {
+  float: left;
+  width: 50%;
+}
+
+
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
