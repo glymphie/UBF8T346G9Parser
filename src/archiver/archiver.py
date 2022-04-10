@@ -13,16 +13,38 @@ class MailArchiver(config_logger.Logger):
     def __init__(self) -> None:
         self.mailsdir = 'MailArchive/Mails'
         self._check_mailsdir(self.mailsdir)
+        self.mails_info = {}
 
     def archive_mail(self, mail: Dict, message: bytes) -> None:
         mail_times = self._get_date(mail)
         mail_path = self._get_mail_path(mail, mail_times)
+        self._update_mails_info(mail, mail_times)
         self._style_mails(mail, mail_path, message)
+
+    def update_index(self) -> None:
+        self.logger.info('Updating index')
+
+        htmlstart = '<head>\n<link rel="stylesheet" href="./static/css/custom.css">\n</head>\n'
+        htmltitle = '<h2>\nEmails found by the UBF8T346G9 Parser\n</h2>\n'
+        htmlend = '</body>\n</html>'
+
+        print(self.mails_info)
+
+    def _update_mails_info(self, mail, mail_times):
+        mail_info = {
+            'path': 'Mails/{year}/{month}/{day}/{mailid}.html'.format(
+                year=mail_times.get('year'),
+                month=mail_times.get('month'),
+                day=mail_times.get('day'),
+                mailid=mail.get('id')
+            ),
+            'subject': mail.get('subject')
+        }
 
     def _style_mails(self, mail: Dict, mail_path: str, message: bytes):
 
         with helpers.Helper.open_file(mail_path) as f:
-            f.write('<head><link rel="stylesheet" href="../../../../static/css/custom.css"></head>')
+            f.write('<head>\n<link rel="stylesheet" href="../../../../static/css/custom.css">\n</head>\n')
             self._write_meta_data(mail, f)
             f.write('\n<div class="bordermail">\n')
             f.write(message.decode('utf-16-le','ignore'))
