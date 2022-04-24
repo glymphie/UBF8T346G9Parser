@@ -28,4 +28,6 @@ if __name__ == "__main__":
 
     progressbar.progress_done()
 
-    logger.logger.info('Done getting emails, updating index')
+    logger.logger.info('Done getting emails')
+
+    archiver_app.update_index()
