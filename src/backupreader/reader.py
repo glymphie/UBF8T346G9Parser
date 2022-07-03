@@ -1,5 +1,6 @@
 import sqlite3
 import dataclasses
+import pathlib
 from typing import Generator, List
 
 from src.helpers import helpers # type: ignore
@@ -39,6 +40,23 @@ class BackupReader(config_logger.Logger):
         db_connection = self._connect_to_database(self.db_location)
         mails = self._get_mails(db_connection)
         return len(list(mails))
+
+    def get_attachments_from_folder(self) -> Generator:
+        self.logger.info('Getting attachments from folders')
+        message_attachments = 'Message Attachments/'
+        attachments_location = pathlib.Path(self.profile_data_location +
+            message_attachments)
+        attachments_directories = [directory for directory
+                                   in attachments_location.iterdir()
+                                   if directory.is_dir()]
+        for attachment_directory in attachments_directories:
+            for attachments_location in attachment_directory.iterdir():
+                if '._' not in str(attachments_location):
+                    yield attachments_location
+
+    def get_attachments_amount(self) -> int:
+        return len(list(self.get_attachments_from_folder()))
+
 
     def _get_info_from_email(self, mail: dict) -> dict:
         return {

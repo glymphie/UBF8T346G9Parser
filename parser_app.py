@@ -18,7 +18,6 @@ if __name__ == "__main__":
     progressbar = progress.ProgressBar(mails_amount)
 
     mails = backupreader_app.get_mails_from_database()
-
     logger.logger.info('Getting email content and writing to files')
     for mail in mails:
         progressbar.update()
@@ -27,7 +26,20 @@ if __name__ == "__main__":
         archiver_app.archive_mail(mail, message)
 
     progressbar.progress_done()
-
     logger.logger.info('Done getting emails')
 
     archiver_app.update_index()
+
+    attachments_amount = backupreader_app.get_attachments_amount()
+    progressbar = progress.ProgressBar(attachments_amount)
+
+    attachments = backupreader_app.get_attachments_from_folder()
+    logger.logger.info('Getting attached files')
+    for num, attachment in enumerate(attachments):
+        progressbar.update()
+        attachment_content, attachment_name = olk15parser_app.get_file_content(attachment)
+        archiver_app.archive_attachment(attachment_content, '{}_{}'.format(num, attachment_name))
+
+    progressbar.progress_done()
+
+    logger.logger.info('Done getting attached files')

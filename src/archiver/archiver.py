@@ -18,6 +18,7 @@ class MailArchiver(config_logger.Logger):
 
     def __init__(self) -> None:
         self.mailsdir = 'MailArchive/Mails'
+        self.attachmentsdir = 'MailArchive/Attachments/'
         self._check_mailsdir(self.mailsdir)
         self.mails_info = {}
 
@@ -26,6 +27,11 @@ class MailArchiver(config_logger.Logger):
         mail_path = self._get_mail_path(mail, mail_times)
         self._update_mails_info(mail, mail_times)
         self._style_mails(mail, mail_path, message)
+
+    def archive_attachment(self, attachment_content: bytes, attachment_name: str) -> None:
+        pathlib.Path(self.attachmentsdir).mkdir(parents=True, exist_ok=True)
+        with open(self.attachmentsdir + attachment_name, 'wb') as attachment_file:
+            attachment_file.write(attachment_content)
 
     def update_index(self) -> None:
         self.logger.info('Updating index')
