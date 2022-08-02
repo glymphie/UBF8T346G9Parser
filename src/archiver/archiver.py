@@ -30,8 +30,9 @@ class MailArchiver(config_logger.Logger):
 
     def archive_attachment(self, attachment_content: bytes, attachment_name: str) -> None:
         pathlib.Path(self.attachmentsdir).mkdir(parents=True, exist_ok=True)
-        with open(self.attachmentsdir + attachment_name, 'wb') as attachment_file:
-            attachment_file.write(attachment_content)
+        if attachment_content != b'':
+            with open(self.attachmentsdir + attachment_name, 'wb') as attachment_file:
+                attachment_file.write(attachment_content)
 
     def update_index(self) -> None:
         self.logger.info('Updating index')
