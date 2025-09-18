@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-from src.backupreader import reader
-from src.olk15parser import parser
 from src.archiver import archiver
-from src.helpers import helpers
-from src.helpers import progress
+from src.backupreader import reader
+from src.helpers import helpers, progress
 from src.logger import config_logger
+from src.olk15parser import parser
 
 logger = config_logger.Logger()
 
@@ -18,15 +17,15 @@ if __name__ == "__main__":
     progressbar = progress.ProgressBar(mails_amount)
 
     mails = backupreader_app.get_mails_from_database()
-    logger.logger.info('Getting email content and writing to files')
+    logger.logger.info("Getting email content and writing to files")
     for mail in mails:
         progressbar.update()
-        mail_path = profile_data_location + mail.get('content_path')
-        message = olk15parser_app.get_mail_content(mail_path, mail.get('subject'))
+        mail_path = profile_data_location + mail.get("content_path")
+        message = olk15parser_app.get_mail_content(mail_path, mail.get("subject"))
         archiver_app.archive_mail(mail, message)
 
     progressbar.progress_done()
-    logger.logger.info('Done getting emails')
+    logger.logger.info("Done getting emails")
 
     archiver_app.update_index()
 
@@ -34,12 +33,16 @@ if __name__ == "__main__":
     progressbar = progress.ProgressBar(attachments_amount)
 
     attachments = backupreader_app.get_attachments_from_folder()
-    logger.logger.info('Getting attached files')
+    logger.logger.info("Getting attached files")
     for num, attachment in enumerate(attachments):
         progressbar.update()
-        attachment_content, attachment_name = olk15parser_app.get_file_content(attachment)
-        archiver_app.archive_attachment(attachment_content, '{}_{}'.format(num, attachment_name))
+        attachment_content, attachment_name = olk15parser_app.get_file_content(
+            attachment
+        )
+        archiver_app.archive_attachment(
+            attachment_content, "{}_{}".format(num, attachment_name)
+        )
 
     progressbar.progress_done()
 
-    logger.logger.info('Done getting attached files')
+    logger.logger.info("Done getting attached files")
